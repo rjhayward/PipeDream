@@ -9,8 +9,11 @@ public class PipeSeries : MonoBehaviour
     public enum GameState {PreGame, InGame};
     GameState state;
 
-    public Pipe pipePrefab;
+    public Button button;
+
     public Font font;
+    public Text pauseText;
+    public Pipe pipePrefab;
     //stores the current pipes as a queue such that when a new one is added, the oldest one is deleted (so the pipes don't overlap each other, which starts to happen when you keep a large amount of pipes)
     Queue<Pipe> PipeQueue;
 
@@ -22,6 +25,7 @@ public class PipeSeries : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        button.onClick.AddListener(PauseToggle);
         framesSinceLastPipe = 0;
         InitialisePipeSeries();
     }
@@ -31,8 +35,11 @@ public class PipeSeries : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            ChangeState();
+            PauseToggle();
+            // ChangeState();
         }
+
+
         framesSinceLastPipe++;
     }
 
@@ -46,7 +53,7 @@ public class PipeSeries : MonoBehaviour
             foreach (Pipe p in PipeQueue)
             {
                 Destroy(p.gameObject);
-            }   
+            }
             PipeQueue.Clear();
         }
 
@@ -54,14 +61,14 @@ public class PipeSeries : MonoBehaviour
         Pipe previousPipe = null;
 
         float percentage = Random.Range(0.1f, 0.5f);
-        //adds initial 5 pipes
+        //adds initial 7 pipes
         for (int i = 0; i < 7; i++)
         {
             Pipe newPipe = Instantiate(pipePrefab);
 
             newPipe.transform.parent = transform;
 
-            if (i > 0) newPipe.RenderStraightPipe();//Vector3.zero, percentage);
+            if (i > 0) newPipe.RenderStraightPipe(); //Vector3.zero, percentage);
             else newPipe.RenderStraightPipe();
 
             if (i > 0) newPipe.RenderVolume();
@@ -80,13 +87,14 @@ public class PipeSeries : MonoBehaviour
         if (state == GameState.PreGame)
         {
 
-            Rect startPos = new Rect((Screen.width / 2.0f) - 300, (Screen.height / 2.0f) - 90, 600, 180);
+            Rect buttonPos = new Rect((Screen.width / 2.0f) - 300, (Screen.height / 2.0f) - 90, 600, 180);
+            
             Rect labelPos = new Rect((Screen.width / 2.0f) - 300, (Screen.height / 2.0f) - 270, 600, 180);
             //CrossPlatformInputManager.SetAxisZero("Roll");
 
             GUIStyle styleBtn = GUI.skin.button;
             GUIStyle styleLbl = GUI.skin.label;
-
+            
             styleBtn.font = font;
             styleLbl.font = font;
 
@@ -95,15 +103,52 @@ public class PipeSeries : MonoBehaviour
             styleLbl.alignment = TextAnchor.MiddleCenter;
             GUI.Label(labelPos, "PipeDream!!!", styleLbl);
 
-            if (GUI.Button(startPos, "Start Game", styleBtn))
+            if (GUI.Button(buttonPos, "Start Game", styleBtn))
             {
                 ChangeState();
                 canvas.GetComponentInChildren<Text>().text = "Score: 0";
                 ship.ResetAcceleration();
             }
+            
+        }
+        else
+        {
+
+            /* 
+            
+            GUIStyle styleBtn = GUI.skin.button;
+            
+            styleBtn.font = font;
+            
+            styleBtn.fontSize = 100;
+            
+
+            Rect pausePos = new Rect(300, 90, 300, 300);
+
+            GUI.contentColor = Color.green;
+            if (GUI.Button(pausePos, "| |", styleBtn))
+            {
+                PauseToggle();
+            }
+
+            */
         }
     }
-
+    
+    void PauseToggle()
+    {
+        Debug.Log("pausing");
+        if (Mathf.Approximately(Time.timeScale, 0.0f))
+        {
+            Time.timeScale = 1.0f;
+            pauseText.text = "";
+        }
+        else
+        {
+            Time.timeScale = 0.0f;
+            pauseText.text = "Paused";
+        }
+    }
 
 
     public void ChangeState()//player presses start/end

@@ -1,0 +1,1 @@
+To run the game click on the .exe file!

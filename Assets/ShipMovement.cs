@@ -13,8 +13,10 @@ public class ShipMovement : MonoBehaviour
     float roll;
     int score;
     public Text highScore;
-
+    public Button pause;
+    float originalTorusRadius;
     float ChangeInPitch;
+    float ChangeInRoll;
     Vector3 vel;
     Animator anim;
     Rigidbody rb;
@@ -29,18 +31,23 @@ public class ShipMovement : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+        originalTorusRadius = pipeSeries.pipePrefab.torusRadius;
         score = 0;
-        desktop = false;
+        desktop = true;
         pitch = 0;
         yaw = 0;
         roll = 0;
         ChangeInPitch = 0;
+        ChangeInRoll = 0;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         originalRot = transform.rotation;
         originalPos = transform.position;
         originalAcceleration = Input.acceleration;
         originalAcceleration.x = 0;
+        originalAcceleration.y = 0;
+
+        //pause.onClick.AddListener(PauseToggle);
 
         if (PlayerPrefs.HasKey("HighScore"))
         {
@@ -56,12 +63,10 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
-        int speedMultiplier = 170;
+        int speedMultiplier = 100;
 
         if (pipeSeries.GetState() == PipeSeries.GameState.InGame)
         {
@@ -84,15 +89,24 @@ public class ShipMovement : MonoBehaviour
                 acceleration -= originalAcceleration;
 
                 ChangeInPitch = 5 * (pitch / -400); //makes it between -1 and 1
+                ChangeInRoll = (1 / 0.15f) * (roll / -500); //makes it between -1 and 1
                 pitch = -400 * Mathf.Clamp(acceleration.z, -0.2f, 0.2f);
                 roll = -500 * Mathf.Clamp(acceleration.x, -0.15f, 0.15f);
+
+                float absPitch = ChangeInPitch;
+                float absRoll = ChangeInRoll;
+
                 ChangeInPitch -= 5 * (pitch / -400);
+                ChangeInRoll -= (1 / 0.15f) * (roll / -500);
+                
+                float pitchMultiplier = Mathf.Pow(3*absPitch/4, 2) + 0.75f;
+                float rollMultiplier = Mathf.Pow(3*absRoll/4, 2) + 0.75f;
 
                 cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
 
-                if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
+                if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
 
-                speedMultiplier = 170;
+                speedMultiplier = 100;
             }
             else
             {
@@ -104,22 +118,32 @@ public class ShipMovement : MonoBehaviour
                 }
                 rb.isKinematic = false;
 
-                pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f;
-                roll = CrossPlatformInputManager.GetAxis("Roll") * 150f;
+                pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f ;
+                roll = CrossPlatformInputManager.GetAxis("Roll") * 150f ;
 
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
 
 
-                speedMultiplier = 200;
+                speedMultiplier = 100;
             }
         }
+        float speedFunction = (float) (1 + 2*(Math.Log10((score / 8) + 1) / 3));
+                
+        float torusRadiusFunction = (float)(1 - (Math.Log10((score / 16) + 1)/8)) ;
+        transform.position += speedFunction * speedMultiplier * transform.forward * Time.deltaTime;
 
-        transform.position += speedMultiplier * transform.forward * Time.deltaTime;
+        //limits the decrease in torus radius to half 
+        if (pipeSeries.pipePrefab.torusRadius > originalTorusRadius / 2)
+        {
+            pipeSeries.pipePrefab.torusRadius = originalTorusRadius * torusRadiusFunction;
+        }
     }
 
     public void ResetAcceleration()
     {
         if (!desktop) originalAcceleration = Input.acceleration;
+        originalAcceleration.x = 0;
+        originalAcceleration.y = 0;
     }
 
     void OnCollisionEnter(Collision col)
@@ -138,11 +162,12 @@ public class ShipMovement : MonoBehaviour
             rb.isKinematic = true;
             rb.isKinematic = false;
 
+            pipeSeries.pipePrefab.torusRadius = originalTorusRadius;
             pipeSeries.InitialisePipeSeries();
+
         }
     }
-
-
+    
     void OnTriggerEnter(Collider col)
     {
         //whenever the pipevolume is entered 
@@ -162,4 +187,7 @@ public class ShipMovement : MonoBehaviour
             highScore.text = "High Score: " + PlayerPrefs.GetInt("HighScore");
         }
     }
+
+
+
 }

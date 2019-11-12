@@ -13,6 +13,7 @@ public class PipeVolume : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         mesh.name = "PipeVol";
         GetComponent<MeshCollider>().sharedMesh = mesh;
+
     }
 
 

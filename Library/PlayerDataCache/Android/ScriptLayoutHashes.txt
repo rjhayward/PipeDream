@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-D:/UnityProjects/PipeDream/Builds/[current android build] PipeDream Alpha Android 0.2.apk
+D:/UnityProjects/PipeDream/Builds/[current android build] PipeDream Alpha Android 0.1.4.apk
 SceneListBegin?
 Assets/Scenes/MainScene.unity
 SceneListEnd?
@@ -208,3 +208,5 @@ c6666661329916e218bee7f5e79e60f5 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 ac6acd886c54c48c599ab5fed5781ea7 Unity.Postprocessing.Runtime.dll:UnityEngine.Rendering.PostProcessing.AmbientOcclusion
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 47cd05cf11ce8beb2fd9a1522f58f5ec Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.AutoMobileShaderSwitch
+20240431c815058690a3ba9bdfb91802 Assembly-CSharp.dll:.LookCamera
+f9a3fa795fdc45b44f33cc2a28c5a2ca Assembly-CSharp.dll:.SkyboxChanger

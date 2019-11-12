@@ -14,7 +14,7 @@ public class Pipe : MonoBehaviour
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
-
+    
     public PipeVolume pipeVolPrefab;
     PipeVolume pipeVolume;
     public float rotate;
@@ -49,7 +49,7 @@ public class Pipe : MonoBehaviour
     public void AttachAsNewPipe(Pipe originalPipe)
     {
         transform.SetParent(originalPipe.transform, false);
-        transform.localPosition = Vector3.zero;
+        //transform.localPosition = Vector3.zero;
 
         //rotates the pipe randomly but still in such a way that the rotation still allows the pipe to cohere to the other 
         transform.Rotate(0f, Mathf.RoundToInt(Random.Range((pipeSegments - 1) / 2, (pipeSegments - 1))) * (360f / (pipeSegments - 1)), 0f);
@@ -63,7 +63,7 @@ public class Pipe : MonoBehaviour
         transform.SetParent(originalPipe.transform.parent);
     }
 
-    //used to get a point on a torus with given u/v values
+    //used to get a point on a torus with given u/v values (u = angle along the torus, v = angle along the pipe)
     private Vector3 GetPoint(float u, float v)
     {
         Vector3 point;
@@ -78,14 +78,14 @@ public class Pipe : MonoBehaviour
     //renders the volume which when passed through adds new pipes, deletes old pipes and increments the score by 1
     public void RenderVolume() 
     {
-        Vector3[] volumeVertices = new Vector3[pipeSegments];
+        Vector3[] volumeVertices = new Vector3[pipeSegments + 1];
 
         volumeVertices[0] = (GetPoint(0, 2f * Mathf.PI)).normalized * (GetPoint(0, 2f * Mathf.PI).magnitude);// - pipeRadius);
 
         float v = 0;
 
         //used to generate the array of vertices as required 
-        for (int i = 0; i < pipeSegments-1; i++)
+        for (int i = 0; i < pipeSegments; i++)
         {
             Vector3 point = GetPoint(0, v);
 
@@ -112,6 +112,9 @@ public class Pipe : MonoBehaviour
 
         pipeVolume.mesh.RecalculateBounds();
         pipeVolume.mesh.RecalculateNormals();
+
+
+        pipeVolume.transform.position = transform.position;
     }
 
     //renders a straight pipe instead of one which is a section of a torus
@@ -219,13 +222,13 @@ public class Pipe : MonoBehaviour
         {              
             for (int i = 0; i < pipeSegments; i++)
             {
-                triangles[6 * (pipeSegments) * j + 6 * i + 0] = vertex + 3;    //0  //reverse these for outside view
+                triangles[6 * (pipeSegments) * j + 6 * i + 0] = vertex + 0;    //0  //reverse these for outside view
                 triangles[6 * (pipeSegments) * j + 6 * i + 1] = vertex + 2;    //2
-                triangles[6 * (pipeSegments) * j + 6 * i + 2] = vertex + 0;    //3
+                triangles[6 * (pipeSegments) * j + 6 * i + 2] = vertex + 3;    //3
 
-                triangles[6 * (pipeSegments) * j + 6 * i + 3] = vertex + 0;    //3  //reverse these for outside view
+                triangles[6 * (pipeSegments) * j + 6 * i + 3] = vertex + 3;    //3  //reverse these for outside view
                 triangles[6 * (pipeSegments) * j + 6 * i + 4] = vertex + 1;    //1
-                triangles[6 * (pipeSegments) * j + 6 * i + 5] = vertex + 3;    //0 
+                triangles[6 * (pipeSegments) * j + 6 * i + 5] = vertex + 0;    //0 
 
                 vertex += 2;
             }

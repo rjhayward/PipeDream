@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highScore: {fileID: 1315698353}
-  pauseText: {fileID: 0}
+  pauseText: {fileID: 870856695}
   cam: {fileID: 534669904}
   pipeSeries: {fileID: 799495036}
 --- !u!4 &393937005

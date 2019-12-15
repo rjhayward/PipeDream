@@ -7,10 +7,6 @@ using UnityStandardAssets.CrossPlatformInput;
 
 //class for main shipmovement behaviour
 
-
-
-
-
 public class ShipMovement : MonoBehaviour
 {
     bool desktop;
@@ -39,7 +35,7 @@ public class ShipMovement : MonoBehaviour
     {
         originalTorusRadius = pipeSeries.pipePrefab.torusRadius;
         score = 0;
-        desktop = false;
+        desktop = true;
         pitch = 0;
         yaw = 0;
         roll = 0;
@@ -73,12 +69,18 @@ public class ShipMovement : MonoBehaviour
     {
         int speedMultiplier = 100;
 
+       
         if (pipeSeries.GetState() == PipeSeries.GameState.InGame)
         {
             
             //when we aren't using mouse + keyboard to debug
             if (!desktop)
             {
+                if (Input.touchCount > 0)
+                {
+                    if (Input.GetTouch(0).phase == TouchPhase.Began) PauseToggle();
+                }
+
                 //use this for calculating 
                 Vector3 oldPYR = new Vector3(pitch, yaw, roll);
 
@@ -115,9 +117,10 @@ public class ShipMovement : MonoBehaviour
             }
             else //when we are using mouse + keyboard to debug  
             {
-                if (Input.touchCount > 0)
+                
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began) PauseToggle();
+                    PauseToggle();
                 }
 
                 Vector3 oldPYR = new Vector3(pitch, yaw, roll);

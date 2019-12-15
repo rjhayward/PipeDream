@@ -111,28 +111,28 @@ public class PipeSeries : MonoBehaviour
             }
             
         }
-        else
-        {
+        //else
+        //{
 
-            /* 
+        //    /* 
             
-            GUIStyle styleBtn = GUI.skin.button;
+        //    GUIStyle styleBtn = GUI.skin.button;
             
-            styleBtn.font = font;
+        //    styleBtn.font = font;
             
-            styleBtn.fontSize = 100;
+        //    styleBtn.fontSize = 100;
             
 
-            Rect pausePos = new Rect(300, 90, 300, 300);
+        //    Rect pausePos = new Rect(300, 90, 300, 300);
 
-            GUI.contentColor = Color.green;
-            if (GUI.Button(pausePos, "| |", styleBtn))
-            {
-                PauseToggle();
-            }
+        //    GUI.contentColor = Color.green;
+        //    if (GUI.Button(pausePos, "| |", styleBtn))
+        //    {
+        //        PauseToggle();
+        //    }
 
-            */
-        }
+        //    */
+        //}
     }
     
 

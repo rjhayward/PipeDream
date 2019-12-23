@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,23 +10,24 @@ public class PipeSeries : MonoBehaviour
     public enum GameState {PreGame, InGame};
     GameState state;
 
+    public Canvas canvas;
+    public ShipMovement ship;
     public Button button;
-
     public Font font;
     public Pipe pipePrefab;
     //stores the current pipes as a queue such that when a new one is added, the oldest one is deleted (so the pipes don't overlap each other, which starts to happen when you keep a large amount of pipes)
     Queue<Pipe> PipeQueue;
 
+    int pipeCount;
     int framesSinceLastPipe;
-    public Canvas canvas;
 
-    public ShipMovement ship;
     
     // Use this for initialization
     void Start()
     {
         //button.onClick.AddListener(PauseToggle);
         framesSinceLastPipe = 0;
+        pipeCount = 0;
         InitialisePipeSeries();
     }
     
@@ -61,8 +63,8 @@ public class PipeSeries : MonoBehaviour
         Pipe previousPipe = null;
 
         float percentage = Random.Range(0.1f, 0.5f);
-        //adds initial 7 pipes
-        for (int i = 0; i < 7; i++)
+        //adds initial 17 pipes
+        for (int i = 0; i < 17; i++)
         {
             Pipe newPipe = Instantiate(pipePrefab);
 
@@ -155,11 +157,17 @@ public class PipeSeries : MonoBehaviour
     {
         return state;
     }
-    
+
+    public void SetState(GameState s)
+    {
+        state = s;
+    }
+
 
     //when a pipe is added, it is added to the queue and the first pipe on the queue is destroyed
     public int AddPipe(int score)
     {
+        pipeCount++;
         //so multiple collisions with the same pipe at a similar time don't generate more pipes than it should
         if (framesSinceLastPipe > 15) //dequeue and destroy first pipe
         {
@@ -168,30 +176,96 @@ public class PipeSeries : MonoBehaviour
             Pipe toDelete = PipeQueue.Dequeue();
             Destroy(toDelete.gameObject);
 
+            
+
+            
+            if (state == GameState.PreGame)
+            {
+                Pipe newPipe = Instantiate(pipePrefab);
+                newPipe.transform.parent = transform;
+                Pipe[] pipeArray = PipeQueue.ToArray();
+
+                Pipe previousPipe = pipeArray[pipeArray.Length - 1];
+
+                newPipe.RenderStraightPipe();
+                newPipe.AttachAsNewStraightPipe(previousPipe);
+                PipeQueue.Enqueue(newPipe);
+            }
+            else
+            {
+                int pipesToAdd = 3;
+                score++;
+
+                if (true)//pipeCount % pipesToAdd == 0)
+                {
+                    int tries = 0;
+                    while (!AttemptNPipeAddition(pipesToAdd) && tries < 10)
+                    {
+                        tries++;
+                        Debug.Log("unsuccessful add, trying again");
+
+                        RollbackNPipeAddition(pipesToAdd);
+                    }
+
+                }
+            }
+
+
+             // add new pipe to queue
+        }
+        return score;
+    }
+
+    public bool AttemptNPipeAddition(int n)
+    {
+        bool collision = false;
+
+        for (int i = 0; i < n; i++)
+        {
+
             Pipe[] pipeArray = PipeQueue.ToArray();
 
             Pipe previousPipe = pipeArray[pipeArray.Length - 1];
 
-            float percentage = Random.Range(0.1f, 0.5f);
-
             Pipe newPipe = Instantiate(pipePrefab);
-
             newPipe.transform.parent = transform;
-            if (state == GameState.PreGame)
-            {
-                newPipe.RenderStraightPipe();
-                newPipe.AttachAsNewStraightPipe(previousPipe);
-            }
-            else
-            {
-                newPipe.RenderPipe(Vector3.zero, percentage);
-                newPipe.AttachAsNewPipe(previousPipe);
-                score++;
-            }
+            float percentage = 0.6f; //Random.Range(0.1f, 0.5f);
             newPipe.RenderVolume();
+            newPipe.RenderPipe(Vector3.zero, percentage);
+            newPipe.AttachAsNewPipe(previousPipe);
+            PipeQueue.Enqueue(newPipe);
 
-            PipeQueue.Enqueue(newPipe); // add new pipe to queue
+
+            Collider[] colliders = Physics.OverlapSphere(Vector3.zero, newPipe.torusRadius * 1.5f);
+            
+            for (int j = 0; j < colliders.Length; j++)
+            {
+               if ((colliders[j].GetComponentInParent<Pipe>().gameObject != newPipe.gameObject) && (colliders[j].GetComponentInParent<Pipe>().gameObject != previousPipe.gameObject))
+               {
+                    if (colliders[j].GetComponentInParent<Pipe>() != null) // TODO figure out a way to check if the collision is of type Pipe only -> currently this triggers when PipeVolume 
+                    {
+                        Debug.Log(colliders[j].gameObject.name);
+                        collision = true;
+                    }
+               }
+            }
         }
-        return score;
+        
+        return !collision; // returns whether there has been a successful addition with no collisions
+    }
+
+    public void RollbackNPipeAddition(int n)
+    {
+        Pipe[] pipeArray = PipeQueue.ToArray();
+
+        for (int i = 1; i <= n; i++)
+        {
+            Destroy(pipeArray[pipeArray.Length - i].gameObject);//SetActive(false);
+            //pipeArray[pipeArray.Length - i].GetComponent<MeshFilter>().sharedMesh = null;
+            pipeArray[pipeArray.Length - i] = null;
+        }
+
+        pipeArray = pipeArray.Where(val => val != null).ToArray();
+        PipeQueue = new Queue<Pipe>(pipeArray);
     }
 }

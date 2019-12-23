@@ -69,75 +69,78 @@ public class ShipMovement : MonoBehaviour
     {
         int speedMultiplier = 100;
 
-       
+        
+
         if (pipeSeries.GetState() == PipeSeries.GameState.InGame)
         {
-            
-            //when we aren't using mouse + keyboard to debug
-            if (!desktop)
+            if (Input.touchCount > 0)
             {
-                if (Input.touchCount > 0)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began) PauseToggle();
-                }
-
-                //use this for calculating 
-                Vector3 oldPYR = new Vector3(pitch, yaw, roll);
-
-                if (new Vector3(pitch, yaw, roll) != oldPYR)
-                {
-                    rb.isKinematic = true;
-                }
-
-                rb.isKinematic = false;
-                _ = Vector3.zero;
-                Vector3 acceleration = Input.acceleration;
-                acceleration /= acceleration.magnitude;
-                acceleration -= originalAcceleration;
-
-                ChangeInPitch = 5 * (pitch / -400); //makes it between -1 and 1
-                ChangeInRoll = (1 / 0.15f) * (roll / -500); //makes it between -1 and 1
-                pitch = -400 * Mathf.Clamp(acceleration.z, -0.2f, 0.2f);
-                roll = -500 * Mathf.Clamp(acceleration.x, -0.15f, 0.15f);
-
-                float absPitch = ChangeInPitch;
-                float absRoll = ChangeInRoll;
-
-                ChangeInPitch -= 5 * (pitch / -400);
-                ChangeInRoll -= (1 / 0.15f) * (roll / -500);
-                
-                float pitchMultiplier = Mathf.Pow(3*absPitch/4, 2) + 0.75f;
-                float rollMultiplier = Mathf.Pow(3*absRoll/4, 2) + 0.75f;
-
-                cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
-
-                if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
-
-                speedMultiplier = 100;
+                if (Input.GetTouch(0).phase == TouchPhase.Began) PauseToggle();
             }
-            else //when we are using mouse + keyboard to debug  
+
+            if (!Mathf.Approximately(Time.timeScale, 0.0f))
             {
-                
-                if (Input.GetKeyDown(KeyCode.Space))
+                //when we aren't using mouse + keyboard to debug
+                if (!desktop)
                 {
-                    PauseToggle();
+                    //use this for calculating 
+                    Vector3 oldPYR = new Vector3(pitch, yaw, roll);
+
+                    if (new Vector3(pitch, yaw, roll) != oldPYR)
+                    {
+                        rb.isKinematic = true;
+                    }
+
+                    rb.isKinematic = false;
+                    _ = Vector3.zero;
+                    Vector3 acceleration = Input.acceleration;
+                    acceleration /= acceleration.magnitude;
+                    acceleration -= originalAcceleration;
+
+                    ChangeInPitch = 5 * (pitch / -400); //makes it between -1 and 1
+                    ChangeInRoll = (1 / 0.15f) * (roll / -500); //makes it between -1 and 1
+                    pitch = -400 * Mathf.Clamp(acceleration.z, -0.2f, 0.2f);
+                    roll = -500 * Mathf.Clamp(acceleration.x, -0.15f, 0.15f);
+
+                    float absPitch = ChangeInPitch;
+                    float absRoll = ChangeInRoll;
+
+                    ChangeInPitch -= 5 * (pitch / -400);
+                    ChangeInRoll -= (1 / 0.15f) * (roll / -500);
+
+                    float pitchMultiplier = Mathf.Pow(3 * absPitch / 4, 2) + 0.75f;
+                    float rollMultiplier = Mathf.Pow(3 * absRoll / 4, 2) + 0.75f;
+
+                    cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
+
+                    if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
+
+                    speedMultiplier = 100;
                 }
-
-                Vector3 oldPYR = new Vector3(pitch, yaw, roll);
-
-                if (new Vector3(pitch, yaw, roll) != oldPYR)
+                else //when we are using mouse + keyboard to debug  
                 {
-                    rb.isKinematic = true;
+
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        PauseToggle();
+                    }
+
+                    Vector3 oldPYR = new Vector3(pitch, yaw, roll);
+
+                    if (new Vector3(pitch, yaw, roll) != oldPYR)
+                    {
+                        rb.isKinematic = true;
+                    }
+                    rb.isKinematic = false;
+
+                    pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f;
+                    roll = CrossPlatformInputManager.GetAxis("Roll") * 150f;
+
+                    if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
+
+
+                    speedMultiplier = 100;
                 }
-                rb.isKinematic = false;
-
-                pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f ;
-                roll = CrossPlatformInputManager.GetAxis("Roll") * 150f ;
-
-                if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
-
-
-                speedMultiplier = 100;
             }
         }
         float speedFunction = (float) (1 + 2*(Math.Log10((score / 8) + 1) / 3));

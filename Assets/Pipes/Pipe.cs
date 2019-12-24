@@ -27,6 +27,7 @@ public class Pipe : MonoBehaviour
     
     void Awake()
     {
+        GetComponent<Collider>().gameObject.tag = "Pipe";
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         mesh.name = "Pipe";

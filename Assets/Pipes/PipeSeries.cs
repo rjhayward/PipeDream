@@ -64,7 +64,7 @@ public class PipeSeries : MonoBehaviour
 
         float percentage = Random.Range(0.1f, 0.5f);
         //adds initial 17 pipes
-        for (int i = 0; i < 17; i++)
+        for (int i = 0; i < 177; i++)
         {
             Pipe newPipe = Instantiate(pipePrefab);
 
@@ -220,37 +220,52 @@ public class PipeSeries : MonoBehaviour
     {
         bool collision = false;
 
+        Pipe previousPipe = null;
+
+        Pipe newPipe = null;
+
         for (int i = 0; i < n; i++)
         {
 
             Pipe[] pipeArray = PipeQueue.ToArray();
 
-            Pipe previousPipe = pipeArray[pipeArray.Length - 1];
+            previousPipe = pipeArray[pipeArray.Length - 1];
 
-            Pipe newPipe = Instantiate(pipePrefab);
+            newPipe = Instantiate(pipePrefab);
+
             newPipe.transform.parent = transform;
-            float percentage = 0.6f; //Random.Range(0.1f, 0.5f);
+            float percentage = Random.Range(0.1f, 0.5f);
             newPipe.RenderVolume();
             newPipe.RenderPipe(Vector3.zero, percentage);
             newPipe.AttachAsNewPipe(previousPipe);
             PipeQueue.Enqueue(newPipe);
 
+            newPipe.GetComponent<Collider>().gameObject.tag = "PipeCollider";
+            previousPipe.GetComponent<Collider>().gameObject.tag = "PipeCollider";
 
-            Collider[] colliders = Physics.OverlapSphere(Vector3.zero, newPipe.torusRadius * 1.5f);
+            Collider[] colliders = Physics.OverlapSphere(newPipe.transform.position, newPipe.torusRadius * 1.5f); // no colliders ?
             
             for (int j = 0; j < colliders.Length; j++)
             {
-               if ((colliders[j].GetComponentInParent<Pipe>().gameObject != newPipe.gameObject) && (colliders[j].GetComponentInParent<Pipe>().gameObject != previousPipe.gameObject))
-               {
-                    if (colliders[j].GetComponentInParent<Pipe>() != null) // TODO figure out a way to check if the collision is of type Pipe only -> currently this triggers when PipeVolume 
+
+
+               //if ((colliders[j].GetComponentInParent<Pipe>().gameObject != newPipe.gameObject) && (colliders[j].GetComponentInParent<Pipe>().gameObject != previousPipe.gameObject))
+               //{
+                    if (colliders[j].gameObject.tag == "Pipe") //&& (colliders[j].GetComponentInParent<PipeVolume>() == null)) // TODO figure out a way to check if the collision is of type Pipe only -> currently this triggers when PipeVolume 
                     {
                         Debug.Log(colliders[j].gameObject.name);
                         collision = true;
                     }
-               }
+               //}
             }
         }
         
+        if (!collision)
+        {
+            newPipe.GetComponent<Collider>().gameObject.tag = "Pipe";
+            previousPipe.GetComponent<Collider>().gameObject.tag = "Pipe";
+        }
+
         return !collision; // returns whether there has been a successful addition with no collisions
     }
 

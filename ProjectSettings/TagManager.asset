@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Pipe
   - PipeVolume
+  - PipeCollider
   layers:
   - Default
   - TransparentFX

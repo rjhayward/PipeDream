@@ -99,6 +99,8 @@ public class PipeSeries : MonoBehaviour
             styleLbl.font = font;
 
             styleBtn.fontSize = 100;
+            styleBtn.fixedHeight = 150;
+
             styleLbl.fontSize = 130;
             styleLbl.alignment = TextAnchor.MiddleCenter;
             GUI.Label(labelPos, "PipeDream!!!", styleLbl);

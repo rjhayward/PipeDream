@@ -111,7 +111,7 @@ public class ShipMovement : MonoBehaviour
                 float rollMultiplier = Mathf.Pow(3 * absRoll / 4, 2) + 0.75f;
 
                 // if not paused rotate camera slightly on movement
-                if (Mathf.Approximately(Time.timeScale, 1.0f)) cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
+                //if (Mathf.Approximately(Time.timeScale, 1.0f)) cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
 
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
 

@@ -71,10 +71,10 @@ Material:
     - _DstBlend: 10
     - _EdgeLength: 7.3
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 1
     - _GlossyReflections: 0
     - _InvFade: 1
-    - _Metallic: 0
+    - _Metallic: 0.066
     - _Mode: 3
     - _OcclusionStrength: 1
     - _Parallax: 0.02

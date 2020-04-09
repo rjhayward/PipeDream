@@ -230,6 +230,16 @@ public class Pipe : MonoBehaviour
                 triangles[6 * (pipeSegments) * j + 6 * i + 4] = vertex + 1;    //1
                 triangles[6 * (pipeSegments) * j + 6 * i + 5] = vertex + 3;    //0 
 
+                //vertex += 2;
+
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 6] = vertex + 3;    //0  //reverse these for outside view
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 7] = vertex + 2;    //2
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 8] = vertex + 0;    //3
+
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 9] = vertex + 0;    //3  //reverse these for outside view
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 10] = vertex + 1;    //1
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 11] = vertex + 3;    //0 
+
                 vertex += 2;
             }
         }

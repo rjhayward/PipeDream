@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   torusRadius: 200
   pipeRadius: 60
-  torusSegments: 20
-  pipeSegments: 16
+  torusSegments: 19
+  pipeSegments: 15
   pipeVolPrefab: {fileID: 1007403875931722371, guid: d9e1e97cc5adc5d4bb0b791039604c98,
     type: 3}
   rotate: 0
@@ -79,8 +79,8 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b32739538a682ec4ebed92fcaecfca21, type: 2}
-  - {fileID: 2100000, guid: be2e05ef2473a784cbcbccdc4270dd86, type: 2}
+  - {fileID: 2100000, guid: 4d938b8514f189b42bc5eb5619b85dee, type: 2}
+  - {fileID: 2100000, guid: ffa5d5369d6cc55489ae7a79f532d870, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

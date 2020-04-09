@@ -15,7 +15,8 @@ Shader "UCLA Game Lab/Wireframe/Single-Sided Cutout"
 
 			Blend SrcAlpha OneMinusSrcAlpha 
 			LOD 200
-			
+			Cull Off
+
 			CGPROGRAM
 				#pragma target 5.0
 				#include "UnityCG.cginc"

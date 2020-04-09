@@ -36,7 +36,7 @@ public class ShipMovement : MonoBehaviour
     {
         originalTorusRadius = pipeSeries.pipePrefab.torusRadius;
         score = 0;
-        desktop = true;
+        desktop = false;
         pitch = 0;
         yaw = 0;
         roll = 0;

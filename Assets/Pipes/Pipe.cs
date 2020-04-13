@@ -19,12 +19,6 @@ public class Pipe : MonoBehaviour
     PipeVolume pipeVolume;
     public float rotate;
     
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    
     void Awake()
     {
         mesh = new Mesh();

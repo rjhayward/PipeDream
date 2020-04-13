@@ -61,6 +61,7 @@ public class PipeSeries : MonoBehaviour
         Pipe previousPipe = null;
 
         float percentage = Random.Range(0.1f, 0.5f);
+
         //adds initial 7 pipes
         for (int i = 0; i < 7; i++)
         {

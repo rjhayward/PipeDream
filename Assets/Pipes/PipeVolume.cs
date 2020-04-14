@@ -15,11 +15,4 @@ public class PipeVolume : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = mesh;
 
     }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

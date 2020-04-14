@@ -61,6 +61,7 @@ public class PipeSeries : MonoBehaviour
         Pipe previousPipe = null;
 
         float percentage = Random.Range(0.1f, 0.5f);
+
         //adds initial 7 pipes
         for (int i = 0; i < 7; i++)
         {
@@ -99,6 +100,8 @@ public class PipeSeries : MonoBehaviour
             styleLbl.font = font;
 
             styleBtn.fontSize = 100;
+            styleBtn.fixedHeight = 150;
+
             styleLbl.fontSize = 130;
             styleLbl.alignment = TextAnchor.MiddleCenter;
             GUI.Label(labelPos, "PipeDream!!!", styleLbl);

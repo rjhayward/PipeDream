@@ -26,16 +26,17 @@ public class ShipMovement : MonoBehaviour
     Vector3 originalAcceleration;
     Quaternion originalRot;
 
+    public Font font;
     public Camera cam;
 
     public PipeSeries pipeSeries;
-    
+
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         originalTorusRadius = pipeSeries.pipePrefab.torusRadius;
         score = 0;
-        desktop = true;
+        desktop = false;
         pitch = 0;
         yaw = 0;
         roll = 0;
@@ -69,16 +70,16 @@ public class ShipMovement : MonoBehaviour
     {
         int speedMultiplier = 100;
 
-       
+
         if (pipeSeries.GetState() == PipeSeries.GameState.InGame)
         {
-            
+
             //when we aren't using mouse + keyboard to debug
-            if (!desktop)
+            if (!desktop && Mathf.Approximately(Time.timeScale, 1.0f))
             {
                 if (Input.touchCount > 0)
                 {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began) PauseToggle();
+                    if (Input.GetTouch(0).phase == TouchPhase.Began) Pause();
                 }
 
                 //use this for calculating 
@@ -105,11 +106,12 @@ public class ShipMovement : MonoBehaviour
 
                 ChangeInPitch -= 5 * (pitch / -400);
                 ChangeInRoll -= (1 / 0.15f) * (roll / -500);
-                
-                float pitchMultiplier = Mathf.Pow(3*absPitch/4, 2) + 0.75f;
-                float rollMultiplier = Mathf.Pow(3*absRoll/4, 2) + 0.75f;
 
-                cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
+                float pitchMultiplier = Mathf.Pow(3 * absPitch / 4, 2) + 0.75f;
+                float rollMultiplier = Mathf.Pow(3 * absRoll / 4, 2) + 0.75f;
+
+                // if not paused rotate camera slightly on movement
+                //if (Mathf.Approximately(Time.timeScale, 1.0f)) cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
 
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
 
@@ -117,10 +119,10 @@ public class ShipMovement : MonoBehaviour
             }
             else //when we are using mouse + keyboard to debug  
             {
-                
+
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    PauseToggle();
+                    Pause();
                 }
 
                 Vector3 oldPYR = new Vector3(pitch, yaw, roll);
@@ -131,8 +133,8 @@ public class ShipMovement : MonoBehaviour
                 }
                 rb.isKinematic = false;
 
-                pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f ;
-                roll = CrossPlatformInputManager.GetAxis("Roll") * 150f ;
+                pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f;
+                roll = CrossPlatformInputManager.GetAxis("Roll") * 150f;
 
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
 
@@ -140,9 +142,9 @@ public class ShipMovement : MonoBehaviour
                 speedMultiplier = 100;
             }
         }
-        float speedFunction = (float) (1 + 2*(Math.Log10((score / 8) + 1) / 3));
-                
-        float torusRadiusFunction = (float)(1 - (Math.Log10((score / 16) + 1)/8)) ;
+        float speedFunction = (float)(1 + 2 * (Math.Log10((score / 8) + 1) / 3));
+
+        float torusRadiusFunction = (float)(1 - (Math.Log10((score / 16) + 1) / 8));
         transform.position += speedFunction * speedMultiplier * transform.forward * Time.deltaTime;
 
         //limits the decrease in torus radius to half 
@@ -152,19 +154,47 @@ public class ShipMovement : MonoBehaviour
         }
     }
 
-    void PauseToggle()
+
+    void OnGUI()
     {
-        Debug.Log("pausing");
         if (Mathf.Approximately(Time.timeScale, 0.0f))
         {
-            Time.timeScale = 1.0f;
-            pauseText.text = "";
+
+            Rect buttonPos = new Rect((Screen.width / 2.0f) - 300, (Screen.height / 2.0f) + 40, 600, 180);
+            //CrossPlatformInputManager.SetAxisZero("Roll");
+
+            GUIStyle styleBtn = GUI.skin.button;
+
+            styleBtn.font = font;
+
+            styleBtn.fontSize = 100;
+            styleBtn.fixedHeight = 150;
+
+            if (GUI.Button(buttonPos, "Resume", styleBtn))
+            {
+                Time.timeScale = 1.0f;
+                pauseText.text = "";
+            }
         }
-        else
-        {
-            Time.timeScale = 0.0f;
-            pauseText.text = "Paused";
-        }
+    }
+
+
+    void Pause()
+    {
+        //Debug.Log("pausing");
+        
+        Time.timeScale = 0.0f;
+        pauseText.text = "Paused";
+
+        //if (Mathf.Approximately(Time.timeScale, 0.0f))
+        //{
+        //    Time.timeScale = 1.0f;
+        //    pauseText.text = "";
+        //}
+        //else
+        //{
+
+        //}
     }
 
     public void ResetAcceleration()
@@ -195,7 +225,7 @@ public class ShipMovement : MonoBehaviour
 
         }
     }
-    
+
     void OnTriggerEnter(Collider col)
     {
         //whenever the pipevolume is entered 

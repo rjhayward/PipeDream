@@ -19,12 +19,6 @@ public class Pipe : MonoBehaviour
     PipeVolume pipeVolume;
     public float rotate;
     
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    
     void Awake()
     {
         mesh = new Mesh();
@@ -222,13 +216,23 @@ public class Pipe : MonoBehaviour
         {              
             for (int i = 0; i < pipeSegments; i++)
             {
-                triangles[6 * (pipeSegments) * j + 6 * i + 0] = vertex + 0;    //0  //reverse these for outside view
+                triangles[6 * (pipeSegments) * j + 6 * i + 0] = vertex + 3;    //0  //reverse these for outside view
                 triangles[6 * (pipeSegments) * j + 6 * i + 1] = vertex + 2;    //2
-                triangles[6 * (pipeSegments) * j + 6 * i + 2] = vertex + 3;    //3
+                triangles[6 * (pipeSegments) * j + 6 * i + 2] = vertex + 0;    //3
 
-                triangles[6 * (pipeSegments) * j + 6 * i + 3] = vertex + 3;    //3  //reverse these for outside view
+                triangles[6 * (pipeSegments) * j + 6 * i + 3] = vertex + 0;    //3  //reverse these for outside view
                 triangles[6 * (pipeSegments) * j + 6 * i + 4] = vertex + 1;    //1
-                triangles[6 * (pipeSegments) * j + 6 * i + 5] = vertex + 0;    //0 
+                triangles[6 * (pipeSegments) * j + 6 * i + 5] = vertex + 3;    //0 
+
+                //vertex += 2;
+
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 6] = vertex + 3;    //0  //reverse these for outside view
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 7] = vertex + 2;    //2
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 8] = vertex + 0;    //3
+
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 9] = vertex + 0;    //3  //reverse these for outside view
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 10] = vertex + 1;    //1
+                //triangles[6 * 2 * (pipeSegments) * j + 6 * 2 * i + 11] = vertex + 3;    //0 
 
                 vertex += 2;
             }

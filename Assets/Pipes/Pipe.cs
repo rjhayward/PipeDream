@@ -9,16 +9,16 @@ public class Pipe : MonoBehaviour
     public float pipeRadius;
     public int torusSegments;
     public int pipeSegments;
-   
+
     //local fields
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
-    
+
     public PipeVolume pipeVolPrefab;
     PipeVolume pipeVolume;
     public float rotate;
-    
+
     void Awake()
     {
         mesh = new Mesh();
@@ -33,9 +33,9 @@ public class Pipe : MonoBehaviour
     {
         transform.SetParent(originalPipe.transform, false);
         transform.localPosition = Vector3.zero;
-        
-        transform.Translate(0f, -originalPipe.torusRadius/2, 0f, originalPipe.transform);
-                
+
+        transform.Translate(0f, -originalPipe.torusRadius / 2, 0f, originalPipe.transform);
+
         transform.SetParent(originalPipe.transform.parent);
     }
 
@@ -50,7 +50,7 @@ public class Pipe : MonoBehaviour
 
         transform.Translate(originalPipe.torusRadius, 0f, 0f, originalPipe.transform);
 
-        transform.Translate(-torusRadius, 0f,  0f);
+        transform.Translate(-torusRadius, 0f, 0f);
 
         transform.Rotate(0f, 0f, -rotate);
 
@@ -68,9 +68,9 @@ public class Pipe : MonoBehaviour
 
         return point;
     }
-    
+
     //renders the volume which when passed through adds new pipes, deletes old pipes and increments the score by 1
-    public void RenderVolume() 
+    public void RenderVolume()
     {
         Vector3[] volumeVertices = new Vector3[pipeSegments + 1];
 
@@ -85,20 +85,20 @@ public class Pipe : MonoBehaviour
 
             volumeVertices[i + 1] = point;
 
-            v += (2f * Mathf.PI) / (pipeSegments -1);
+            v += (2f * Mathf.PI) / (pipeSegments - 1);
         }
 
         //sets our mesh's vertex array to equal the array we have just created
         pipeVolume.mesh.vertices = volumeVertices;
-        
+
         int[] volumeTriangles = new int[3 + (pipeSegments) * 3];
 
         //used to generate the array of triangles as required 
         for (int n = 1; n < pipeSegments; n++)
         {
-            volumeTriangles[3 * (n-1)] = n;
-            volumeTriangles[3 * (n-1) + 1] = 0;
-            volumeTriangles[3 * (n-1) + 2] = (n+1)% pipeSegments;
+            volumeTriangles[3 * (n - 1)] = n;
+            volumeTriangles[3 * (n - 1) + 1] = 0;
+            volumeTriangles[3 * (n - 1) + 2] = (n + 1) % pipeSegments;
         }
 
         //sets our mesh's triangles array to equal the array we have just created
@@ -118,17 +118,17 @@ public class Pipe : MonoBehaviour
 
         mesh.Clear();
 
-        vertices = new Vector3[2*(pipeSegments-1)];
+        vertices = new Vector3[2 * (pipeSegments - 1)];
 
         float v = 0;
-        
+
         //used to generate the array of vertices as required 
-        for (int i = 0; i < (pipeSegments-1); i++)
+        for (int i = 0; i < (pipeSegments - 1); i++)
         {
             Vector3 point1 = GetPoint(0, v);
             Vector3 point2 = GetPoint(0, v) + torusRadius / 2 * transform.up;
 
-            v += (2f * Mathf.PI) / (pipeSegments-1);
+            v += (2f * Mathf.PI) / (pipeSegments - 1);
             vertices[2 * i] = point1;
             vertices[2 * i + 1] = point2;
         }
@@ -136,9 +136,9 @@ public class Pipe : MonoBehaviour
         //sets our mesh's vertex array to equal the array we have just created
         mesh.vertices = vertices;
 
-        int maxVertex = (2 * (pipeSegments-1)) - 1;
-        
-        triangles = new int[(maxVertex+1) * 3];
+        int maxVertex = (2 * (pipeSegments - 1)) - 1;
+
+        triangles = new int[(maxVertex + 1) * 3];
 
         /**
          * (example triangles array)
@@ -146,9 +146,9 @@ public class Pipe : MonoBehaviour
          * 012 123 234 345 456 567 670
          *  
          **/
-        
+
         //used to generate the array of triangles as required 
-        for (int i = 0; i < maxVertex+1; i++)
+        for (int i = 0; i < maxVertex + 1; i++)
         {
             if (i % 2 == 1)
             {
@@ -165,8 +165,19 @@ public class Pipe : MonoBehaviour
             }
         }
 
+      
         //sets our mesh's triangles array to equal the array we have just created
         mesh.triangles = triangles;
+
+
+        Mesh.MeshDataArray dataArray = Mesh.AcquireReadOnlyMeshData(mesh);
+        
+        mesh = new Mesh();
+        Mesh mesh1 = new Mesh();
+        
+        Mesh.ApplyAndDisposeWritableMeshData(dataArray, mesh1);
+
+        mesh = mesh1;
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
@@ -180,13 +191,13 @@ public class Pipe : MonoBehaviour
         int renderTorusSegments = Mathf.RoundToInt(torusSegments * percentage);
 
         vertices = new Vector3[renderTorusSegments * pipeSegments * 4];
-        
+
         //gives a rotation in degrees which lets all segments stay of equal size
-        rotate = 360 * ((float) renderTorusSegments / (torusSegments - 1));
+        rotate = 360 * ((float)renderTorusSegments / (torusSegments - 1));
 
         float u = 0;
         float v = 0;
-        
+
         //used to generate the array of vertices as required 
         for (int i = 0; i < renderTorusSegments; i++) //for each torusSegment, we want to save all vertices in the loop (2 each time for a pipeSegments amount of times)
         {
@@ -195,12 +206,12 @@ public class Pipe : MonoBehaviour
 
                 Vector3 point1 = startPoint + GetPoint(u + (2f * Mathf.PI / (torusSegments - 1)), v);
 
-                Vector3 point2 = startPoint + GetPoint(u , v);
+                Vector3 point2 = startPoint + GetPoint(u, v);
 
                 vertices[i * (pipeSegments * 2) + j * 2] = point1;
                 vertices[i * (pipeSegments * 2) + j * 2 + 1] = point2;
 
-                v += (2f * Mathf.PI) / (pipeSegments-1);
+                v += (2f * Mathf.PI) / (pipeSegments - 1);
             }
             u += (2f * Mathf.PI) / (torusSegments - 1);
         }
@@ -213,7 +224,7 @@ public class Pipe : MonoBehaviour
         int vertex = 0;
         // used to generate the array of triangles as required 
         for (int j = 0; j < renderTorusSegments; j++)
-        {              
+        {
             for (int i = 0; i < pipeSegments; i++)
             {
                 triangles[6 * (pipeSegments) * j + 6 * i + 0] = vertex + 3;    //0  //reverse these for outside view

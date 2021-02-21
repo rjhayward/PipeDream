@@ -9,7 +9,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class ShipMovement : MonoBehaviour
 {
-    bool desktop;
+    public bool desktop;
     float pitch;
     float yaw;
     float roll;
@@ -26,6 +26,7 @@ public class ShipMovement : MonoBehaviour
     Vector3 originalAcceleration;
     Quaternion originalRot;
 
+    RectTransform reticuleTransform;
     public Font font;
     public Camera cam;
 
@@ -36,7 +37,6 @@ public class ShipMovement : MonoBehaviour
     {
         originalTorusRadius = pipeSeries.pipePrefab.torusRadius;
         score = 0;
-        desktop = true;
         pitch = 0;
         yaw = 0;
         roll = 0;
@@ -49,7 +49,12 @@ public class ShipMovement : MonoBehaviour
         originalAcceleration = Input.acceleration;
         originalAcceleration.x = 0;
         originalAcceleration.y = 0;
+        reticuleTransform = cam.transform.Find("Canvas").Find("Reticule").GetComponent<RectTransform>();
 
+        if (desktop)
+        {
+            cam.fieldOfView = 110f;
+        }
 
         if (PlayerPrefs.HasKey("HighScore"))
         {
@@ -110,8 +115,6 @@ public class ShipMovement : MonoBehaviour
                 float pitchMultiplier = Mathf.Pow(3 * absPitch / 4, 2) + 0.75f;
                 float rollMultiplier = Mathf.Pow(3 * absRoll / 4, 2) + 0.75f;
 
-                // if not paused rotate camera slightly on movement
-                //if (Mathf.Approximately(Time.timeScale, 1.0f)) cam.transform.RotateAround(transform.position, transform.right, -1 * ChangeInPitch);
 
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * pitchMultiplier * Time.deltaTime, 0f, roll * rollMultiplier * Time.deltaTime));
 
@@ -133,9 +136,19 @@ public class ShipMovement : MonoBehaviour
                 }
                 rb.isKinematic = false;
 
+                float changeInPitch = pitch;
+
                 pitch = CrossPlatformInputManager.GetAxis("Pitch") * 85f;
                 roll = CrossPlatformInputManager.GetAxis("Roll") * 150f;
 
+                changeInPitch -= pitch;
+
+                // if not paused rotate camera slightly on movement
+                if (Mathf.Approximately(Time.timeScale, 1.0f))
+                {
+                    cam.transform.RotateAround(transform.position, transform.right, 0.02f * changeInPitch);
+                    reticuleTransform.RotateAround(transform.position, transform.right, -0.02f * changeInPitch);
+                }
                 if (pitch != 0 || roll != 0) transform.Rotate(new Vector3(pitch * Time.deltaTime, 0f, roll * Time.deltaTime));
 
 

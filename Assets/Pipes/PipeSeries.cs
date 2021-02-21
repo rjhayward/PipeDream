@@ -100,7 +100,7 @@ public class PipeSeries : MonoBehaviour
             styleLbl.font = font;
 
             styleBtn.fontSize = 100;
-            styleBtn.fixedHeight = 150;
+            styleBtn.fixedHeight = 100;
 
             styleLbl.fontSize = 130;
             styleLbl.alignment = TextAnchor.MiddleCenter;

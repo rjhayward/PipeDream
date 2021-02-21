@@ -5383,13 +5383,27 @@ Skybox:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 0
   m_CustomSkybox: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+--- !u!1 &773190229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1043276933804982, guid: 39256cd66fc6101459a2263849bc1086,
+    type: 3}
+  m_PrefabInstance: {fileID: 823011668}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &773190232
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773190229}
+  m_Mesh: {fileID: 0}
 --- !u!114 &799495036 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114547478777083490, guid: 39256cd66fc6101459a2263849bc1086,
     type: 3}
   m_PrefabInstance: {fileID: 823011668}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 773190229}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebf3897434a799e4db82c588cbbd37f7, type: 3}

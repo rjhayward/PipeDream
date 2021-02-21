@@ -28,10 +28,7 @@ Shader "UCLA Game Lab/Wireframe/Double-Sided Cutout"
 				// Vertex Shader
 				UCLAGL_v2g vert(appdata_base v)
 				{
-					UCLAGL_v2g o;
-					o = UCLAGL_vert(v);
-					UNITY_TRANSFER_FOG(o,o.pos);
-					return o;
+					return UCLAGL_vert(v);
 				}
 				
 				// Geometry Shader
@@ -48,9 +45,6 @@ Shader "UCLA Game Lab/Wireframe/Double-Sided Cutout"
 					if( col.a < 0.5f ) discard;
 					else col.a = 1.0f;
 					
-					UNITY_APPLY_FOG(input.fogCoord, col);
-					UNITY_OPAQUE_ALPHA(col.a);
-
 					return col;
 				}
 			

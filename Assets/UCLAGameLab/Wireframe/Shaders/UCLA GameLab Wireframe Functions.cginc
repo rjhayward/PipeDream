@@ -7,7 +7,6 @@
 #define UCLA_GAMELAB_WIREFRAME
 
 #include "UnityCG.cginc"
-#pragma multi_compile_fog
 
 // DATA STRUCTURES //
 // Vertex to Geometry
@@ -15,7 +14,6 @@ struct UCLAGL_v2g
 {
 	float4	pos		: POSITION;		// vertex position
 	float2  uv		: TEXCOORD0;	// vertex uv coordinate
-	UNITY_FOG_COORDS(1)
 };
 
 // Geometry to  UCLAGL_fragment
@@ -24,7 +22,6 @@ struct UCLAGL_g2f
 	float4	pos		: POSITION;		// fragment position
 	float2	uv		: TEXCOORD0;	// fragment uv coordinate
 	float3  dist	: TEXCOORD1;	// distance to each edge of the triangle
-	UNITY_FOG_COORDS(2)
 };
 
 // PARAMETERS //
